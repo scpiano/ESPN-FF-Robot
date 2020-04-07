@@ -1,5 +1,5 @@
 module FFRobot
-    module Authentication
+    module Http
         end
     end
 end

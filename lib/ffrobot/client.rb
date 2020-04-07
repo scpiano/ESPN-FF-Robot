@@ -5,7 +5,7 @@ module FFRobot
   
     #   include Authentication
       include HTTParty
-      base_uri 'https://fantasy.espn.com/'
+      base_uri 'https://fantasy.espn.com/apis/v3/'
   
     #   include Objects::Lineup
     #   include Objects::Players
