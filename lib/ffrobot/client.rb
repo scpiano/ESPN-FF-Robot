@@ -2,13 +2,16 @@ module FFRobot
     class Client
       require 'httparty'
       require 'optparse'
+      require 'time'
   
     #   include Authentication
       include HTTParty
-      base_uri 'https://fantasy.espn.com/apis/v3/'
+      base_uri 'https://fantasy.espn.com/apis/v3/games/'
   
+    #   include Objects::League
     #   include Objects::Lineup
-    #   include Objects::Players
+    #   include Objects::Player
+    #   include Objects::Team
   
       attr_accessor :league_id, :team_id, :username, :password, :swid, :espn_s2
   
@@ -32,11 +35,8 @@ module FFRobot
             opts.on("-y", "--year", String, "Year in which a season was played") do |year|
                 options[:year] = year
             end
-            opts.on("-s", "--swid", String, "Software ID tag for your browser's ESPN site cookie") do |swid|
-                options[:swid] = swid
-            end
-            opts.on("-e", "--espns2", String, "Personal ESPN site cookie") do |espns2|
-                options[:espn_s2] = espns2
+            opts.on("-c", "--command [COMMAND]", String, "Command to run FFRobot with") do |cmd|
+                options[:command] = cmd
             end
             opts.on("-h", "--help", "Prints out usage options") do 
                 puts opts
@@ -48,10 +48,21 @@ module FFRobot
         @team_id = options[:team_id]
         @username = options[:username]
         @password = options[:password]
+        @year = options[:year] || Time.new.year
+        @command = options[:command]
 
+      end
+
+      def exec_command
+        if @command == 'set_lineup'
+            set_lineup
+        else
+            puts "Invalid command.\nPlease try again with a valid command."
+        end
       end
     end
 
-    Client.new
-  end
+    client = Client.new
+    client.exec_command
+end
   

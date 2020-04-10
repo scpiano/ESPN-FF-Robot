@@ -1,10 +1,8 @@
 module FFRobot
     module Objects
-        module Lineup
-            class Lineup
+        module Team
+            class Team
                 def initialize
-                end
-                def set_lineup
                 end
             end
         end

@@ -9,7 +9,7 @@ module FFRobot
             if resp && resp.headers.inspect['api-key']
                 @api_key = resp.headers.inspect['api-key']
             else
-                p "Authentication unsuccessful.\nUnable to receive API key.\nPlease retry authentication or continue using for public league access."
+                puts "Authentication unsuccessful.\nUnable to receive API key.\nPlease retry authentication or continue using for public league access."
             end
             headers['authorization'] = 'APIKEY ' + @api_key
         end
@@ -19,10 +19,10 @@ module FFRobot
             payload = {'loginValue' => :username, 'password' => :password}
             resp = HTTParty.post(LOGIN_URL, headers=headers, json=payload)
             if resp.code != 200
-                p "Authentication unsuccessful.\nPlease check username and password\nPlease retry authentication or continue using for public league access."
+                puts "Authentication unsuccessful.\nPlease check username and password\nPlease retry authentication or continue using for public league access."
             end
             if resp['error'] != nil
-                p "Authentication unsuccessful.\nError encountered:#{resp['error'].to_s}\nPlease retry authentication or continue using for public league access."
+                puts "Authentication unsuccessful.\nError encountered:#{resp['error'].to_s}\nPlease retry authentication or continue using for public league access."
             else
                 @cookies = {espn_s2: resp['data']['s2'], swid: resp['data']['profile']['swid']}
         end
