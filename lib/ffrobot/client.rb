@@ -2,7 +2,6 @@ module FFRobot
     class Client
       include Authentication
       include HTTParty
-    #   base_uri 'https://fantasy.espn.com/apis/v3/games/'
   
     #   include Objects::League
     #   include Objects::Lineup
@@ -15,21 +14,27 @@ module FFRobot
         options = {}
 
         OptionParser.new do |opts|
-            opts.banner = "Usage: ruby authentication.rb [options]"
-            opts.on("-l", "--leagueid [LEAGUEID]", String, "Fantasy league ID") do |lid|
+            opts.banner = "Usage: ruby espn-ff-robot.rb [options]"
+            opts.on("-l", "--leagueid LEAGUEID", String, "REQUIRED - fantasy league ID") do |lid|
                 options[:league_id] = lid
             end
-            opts.on("-t", "--teamid", String, "Your fantasy team's ID within the same league") do |tid|
+            opts.on("-t", "--teamid TEAMID", String, "Your fantasy team's ID within the same league") do |tid|
                 options[:team_id] = tid
             end
-            opts.on("-u", "--username [USER]", String, "ESPN username") do |user|
+            opts.on("-u", "--username USERNAME", String, "ESPN username") do |user|
                 options[:username] = user
             end
-            opts.on("-p", "--password [PASSWORD]", String, "ESPN password") do |pass|
+            opts.on("-p", "--password PASSWORD", String, "ESPN password") do |pass|
                 options[:password] = pass
             end
-            opts.on("-y", "--year", String, "Year in which a season was played") do |year|
+            opts.on("-y", "--year YEAR", String, "Year in which a season was played") do |year|
                 options[:year] = year
+            end
+            opts.on("-s", "--swid SWID", String, "ESPN API software identification ID") do |swid|
+                options[:swid] = swid
+            end
+            opts.on("-e", "--espn_s2 ESPN_S2", String, "ESPN API S2 cookie") do |espn_s2|
+                options[:espn_s2] = espn_s2
             end
             # opts.on("-c", "--command [COMMAND]", String, "Command to run FFRobot with") do |cmd|
             #     options[:command] = cmd
@@ -39,17 +44,21 @@ module FFRobot
                 exit
             end
         end.parse!
+        
+        raise OptionParser::MissingArgument if options[:league_id].nil?
 
         @league_id = options[:league_id]
         @team_id = options[:team_id] || nil
-        @username = options[:username]
-        @password = options[:password]
+        @username = options[:username] || nil
+        @password = options[:password] || nil
         @year = options[:year] || Time.new.year
-        @command = options[:command]
+        @swid = options[:swid] || nil
+        @espn_s2 = options[:espn_s2] || nil
+        # @command = options[:command]
 
       end
 
-      def exec_command
+      def self.exec_command
         if @command == 'set_lineup'
             set_lineup
         else
