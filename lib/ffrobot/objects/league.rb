@@ -9,14 +9,14 @@ module FFRobot
                     @league_name = ''
                     @members = [] #id and displayname
                     @teams = [] #owner id and team object
-                    @nfl_week = 0
                     @league_week = 0
+                    @nfl_week = 0
                     @season_id = client.year
                     
                     if client.espn_s2 && client.swid
                         @cookies = {
-                            'espn_s2': espn_s2,
-                            'SWID': swid
+                            'espn_s2': client.espn_s2,
+                            'SWID': client.swid
                         }
                     elsif client.username && client.password
                         @cookies = client.authenticate
@@ -27,13 +27,22 @@ module FFRobot
 
                 def get_league
                     league_endpoint = "ffl/seasons/#{@season_id}/segments/0/leagues/#{@league_id}" 
+                    league_info = HTTParty.get(full_uri(league_endpoint), :cookies => @cookies)
 
-                    p @cookies
-                    resp = HTTParty.post(full_uri(league_endpoint))
-                    p resp
+                    @league_name = league_info['settings']['name']
+                    @league_week = league_info['status']['currentMatchupPeriod']
+                    @nfl_week = league_info['status']['latestScoringPeriod']
+
+                    league_info['members'].each do |member|
+                        @members << {member['displayName'] => member['id']}
+                    end
+
+                    league_info['teams'].each do |team|
+                        @teams << {team['id'] => team['owners'][0]}
+                    end
                 end
 
-                def full_uri(endpoint)
+                def full_uri(endpoint) #move to helper module later
                     return ESPN_FF_URI + endpoint
                 end
             end
