@@ -20,6 +20,7 @@ module FFRobot
             else
                 @cookies = {espn_s2: resp['data']['s2'], swid: resp['data']['profile']['swid']}
                 puts 'Authentication successful.'
+                return @cookies
             end
         end
 

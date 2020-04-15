@@ -3,12 +3,12 @@ module FFRobot
       include Authentication
       include HTTParty
   
-    #   include Objects::League
+      include Objects::League
     #   include Objects::Lineup
     #   include Objects::Player
     #   include Objects::Team
   
-      attr_accessor :league_id, :team_id, :username, :password, :swid, :espn_s2
+      attr_accessor :league_id, :team_id, :username, :password, :year, :swid, :espn_s2
   
       def initialize 
         options = {}
@@ -18,7 +18,7 @@ module FFRobot
             opts.on("-l", "--leagueid LEAGUEID", String, "REQUIRED - fantasy league ID") do |lid|
                 options[:league_id] = lid
             end
-            opts.on("-t", "--teamid TEAMID", String, "Your fantasy team's ID within the same league") do |tid|
+            opts.on("-t", "--teamid TEAMID", Integer, "Your fantasy team's ID within the same league") do |tid|
                 options[:team_id] = tid
             end
             opts.on("-u", "--username USERNAME", String, "ESPN username") do |user|
@@ -27,7 +27,7 @@ module FFRobot
             opts.on("-p", "--password PASSWORD", String, "ESPN password") do |pass|
                 options[:password] = pass
             end
-            opts.on("-y", "--year YEAR", String, "Year in which a season was played") do |year|
+            opts.on("-y", "--year YEAR", Integer, "Year in which a season was played") do |year|
                 options[:year] = year
             end
             opts.on("-s", "--swid SWID", String, "ESPN API software identification ID") do |swid|
@@ -68,7 +68,8 @@ module FFRobot
     end
 
     client = Client.new
-    client.authenticate
+    # client.authenticate
+    league = Objects::League::League.new(client)
     # client.exec_command
 end
   
