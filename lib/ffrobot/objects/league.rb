@@ -44,27 +44,24 @@ module FFRobot
                         teams[team['owners'][0]] = team['id']
                     end
 
-                    # puts teams, @members, @current_user
-
                     get_teams(teams)
                 end
                 
                 def get_teams(teams)
                     params = {'view': 'mRoster'}
                     team_info = HTTParty.get(@uri, :cookies => @cookies, :default_params => params)
+                    # current_roster = {}
 
                     team_info['teams'].each do |team| 
                         if team['id'] == teams[@members[@current_user]]
-                            @teams[team['id']] = team['roster']
-                            # puts "teams: \n#{@teams}"
+                            current_roster = team['roster']['entries']
+                            # @teams[team['id']] = Team.new(current_roster)
+                            current_team = Team.new(current_roster)
                             break
                         else 
                             next
                         end
                     end
-
-                    # puts "headers: #{@cookies}, \npayload: #{params}, \nuri: #{team_info.request.last_uri.to_s}, \n#{team_info.request.options.to_s}"
-                    # puts team_info
                 end
 
                 def full_uri(endpoint) #move to helper module later

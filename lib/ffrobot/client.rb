@@ -58,7 +58,7 @@ module FFRobot
 
       end
 
-      def self.exec_command
+      def self.exec_command(client, league)
         if @command == 'set_lineup'
             set_lineup
         else
