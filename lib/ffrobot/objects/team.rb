@@ -2,7 +2,7 @@ module FFRobot
     module Objects
         module Team
             class Team
-                attr_accessor :players :roster
+                attr_accessor :players, :roster
 
                 def initialize(roster)
                     @roster = []
@@ -14,7 +14,7 @@ module FFRobot
 
                 def get_players(roster)
                     roster.each do |player|
-                        @roster << Player.new(player)
+                        @roster << Objects::Player::Player.new(player)
                     end
                 end
                 

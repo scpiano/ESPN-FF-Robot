@@ -56,7 +56,10 @@ module FFRobot
                         if team['id'] == teams[@members[@current_user]]
                             current_roster = team['roster']['entries']
                             # @teams[team['id']] = Team.new(current_roster)
-                            current_team = Team.new(current_roster)
+                            current_team = Objects::Team::Team.new(current_roster)
+                            current_team.roster.each do |player|
+                                puts player.name
+                            end
                             break
                         else 
                             next
