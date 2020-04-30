@@ -2,19 +2,19 @@ module FFRobot
     module Objects
         module Team
             class Team
-                attr_accessor :players, :roster
+                attr_accessor :roster, :current_week, :team_id
 
-                def initialize(roster)
+                def initialize(roster, week, id)
                     @roster = []
-                    @team_id
-                    @team_name
+                    @current_week = week
+                    @team_id = id
 
-                    get_players roster
+                    get_players roster, @current_week
                 end
 
-                def get_players(roster)
+                def get_players(roster, week)
                     roster.each do |player|
-                        @roster << Objects::Player::Player.new(player)
+                        @roster << Objects::Player::Player.new(player['playerPoolEntry'], week)
                     end
                 end
                 
