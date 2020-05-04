@@ -3,11 +3,6 @@ module FFRobot
       include Authentication
       include HTTParty
   
-      include Objects::League
-    #   include Objects::Lineup
-    #   include Objects::Player
-    #   include Objects::Team
-  
       attr_accessor :league_id, :team_id, :username, :password, :year, :swid, :espn_s2
   
       def initialize 
@@ -68,8 +63,6 @@ module FFRobot
     end
 
     client = Client.new
-    # client.authenticate
     league = Objects::League::League.new(client)
-    # client.exec_command
 end
   
