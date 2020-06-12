@@ -67,7 +67,7 @@ module FFRobot
                     end
                 end
 
-                def full_uri(endpoint) #move to helper module later
+                def full_uri(endpoint) #TODO: move to helper module later
                     return ESPN_FF_URI + endpoint
                 end
             end

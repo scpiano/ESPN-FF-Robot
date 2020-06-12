@@ -14,7 +14,7 @@ module FFRobot
                 options[:league_id] = lid
             end
             opts.on("-t", "--teamid TEAMID", Integer, "Your fantasy team's ID within the same league") do |tid|
-                options[:team_id] = tid
+                options[:team_id] = tid #TODO: will limit the teams in the league to only this team 
             end
             opts.on("-u", "--username USERNAME", String, "ESPN username") do |user|
                 options[:username] = user
@@ -31,9 +31,9 @@ module FFRobot
             opts.on("-e", "--espn_s2 ESPN_S2", String, "ESPN API S2 cookie") do |espn_s2|
                 options[:espn_s2] = espn_s2
             end
-            # opts.on("-c", "--command [COMMAND]", String, "Command to run FFRobot with") do |cmd|
-            #     options[:command] = cmd
-            # end
+            opts.on("-c", "--command COMMAND", String, "Command to run FFRobot with") do |cmd|
+                options[:command] = cmd
+            end
             opts.on("-h", "--help", "Prints out usage options") do 
                 puts opts
                 exit
@@ -49,13 +49,14 @@ module FFRobot
         @year = options[:year] || Time.new.year
         @swid = options[:swid] || nil
         @espn_s2 = options[:espn_s2] || nil
-        # @command = options[:command]
+        @command = options[:command]
 
       end
 
-      def self.exec_command(client, league)
+      def exec_command 
         if @command == 'set_lineup'
-            set_lineup
+            league = Objects::League::League.new(self) #contains any number of teams comprised of players
+            puts "hello there!"
         else
             puts "Invalid command.\nPlease try again with a valid command."
         end
@@ -63,6 +64,6 @@ module FFRobot
     end
 
     client = Client.new
-    league = Objects::League::League.new(client)
+    client.exec_command
 end
   

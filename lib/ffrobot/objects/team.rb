@@ -14,8 +14,9 @@ module FFRobot
 
                 def get_players(roster, week)
                     roster.each do |player|
-                        @roster << Objects::Player::Player.new(player['playerPoolEntry'], week)
+                        @roster << Objects::Player::Player.new(player, week)
                     end
+                    # puts @roster
                 end
                 
             end
