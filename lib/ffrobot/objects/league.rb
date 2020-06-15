@@ -4,8 +4,11 @@ module FFRobot
             ESPN_FF_URI = 'https://fantasy.espn.com/apis/v3/games/'
 
             class League
+                attr_accessor :teams, :current_user, :current_user_owner_id
+                
                 def initialize(client)
                     @current_user = client.username
+                    @current_user_owner_id = ''
                     @league_id = client.league_id
                     @league_name = ''
                     @members = {} #displayname and owner id
@@ -40,6 +43,8 @@ module FFRobot
                         @members[member['displayName']] = member['id']
                     end
 
+                    @current_user_owner_id = @members[@current_user]
+
                     league_info['teams'].each do |team|
                         teams[team['owners'][0]] = team['id']
                     end
@@ -52,7 +57,7 @@ module FFRobot
                     team_info = HTTParty.get(@uri, :cookies => @cookies, :default_params => params)
 
                     team_info['teams'].each do |team| 
-                        if team['id'] == teams[@members[@current_user]]
+                        if team['id'] == teams[@members[@current_user]] # just for current user right now
                             current_roster = team['roster']['entries']
                             @teams[@members[@current_user]] = Objects::Team::Team.new(current_roster, @league_week, team['id'])
                             # @teams.each do |owner, team|

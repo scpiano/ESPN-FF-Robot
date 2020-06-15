@@ -2,6 +2,7 @@ module FFRobot
     class Client
       include Authentication
       include HTTParty
+      include Lineup
   
       attr_accessor :league_id, :team_id, :username, :password, :year, :swid, :espn_s2
   
@@ -57,6 +58,7 @@ module FFRobot
         if @command == 'set_lineup'
             league = Objects::League::League.new(self) #contains any number of teams comprised of players
             puts "hello there!"
+            set_lineup(league.teams[league.current_user_owner_id])
         else
             puts "Invalid command.\nPlease try again with a valid command."
         end

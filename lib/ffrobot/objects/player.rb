@@ -2,8 +2,8 @@ module FFRobot
     module Objects
         module Player
             class Player
-                attr_accessor :player_id, :bye_week, :name, :position_code, :current_lineup_slot, :nfl_team_id, :nfl_team, :keeper, :injury_status, :season_projection, :season_actual, :week_projection, :week_actual
-                POSITION_MAP = {
+                attr_accessor :player_id, :on_bye, :name, :position_code, :current_lineup_slot, :nfl_team_id, :nfl_team, :keeper, :injury_status, :season_projection, :season_actual, :week_projection, :week_actual
+                POSITION_MAP = { # TODO: move to constants file
                     "0" => 'QB',
                     "1" => 'TQB',
                     "2" => 'RB',
@@ -31,7 +31,7 @@ module FFRobot
                     "24" => 'ER',
                     "25" => 'Rookie'
                 }
-                NFL_TEAM_ABBREV = {
+                NFL_TEAM_ABBREV = { # TODO: move to constants file
                     "-1" => 'Bye',
                     "1" => 'ATL',
                     "2" => 'BUF',
@@ -65,7 +65,7 @@ module FFRobot
                     "30" => 'JAX',
                     "33" => 'BAL',
                     "34" => 'HOU'
-                  };
+                  }
 
                 def initialize(player, week)
                     @player_id = player['playerId']
