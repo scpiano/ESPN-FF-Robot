@@ -67,7 +67,7 @@ module FFRobot
                     "34" => 'HOU'
                   }
 
-                def initialize(player, week)
+                def initialize(player, week, season_id)
                     @player_id = player['playerId']
                     @on_bye = NFL_TEAM_ABBREV[player['playerPoolEntry']['player']['proTeamId'].to_s] == 'Bye'
                     @name = player['playerPoolEntry']['player']['fullName']
@@ -83,7 +83,7 @@ module FFRobot
                     @week_actual = nil
 
                     player['playerPoolEntry']['player']['stats'].each do |stats|
-                        if stats['statSplitTypeId'] == 0
+                        if [0,1].include? stats['statSplitTypeId'] and stats['seasonId'] == season_id
                             if stats['statSourceId'] == 1 && stats['scoringPeriodId'] == 0 
                                 @season_projection = stats['appliedTotal']
                             elsif stats['statSourceId'] == 0 && stats['scoringPeriodId'] == 0 
