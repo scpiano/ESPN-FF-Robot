@@ -2,7 +2,7 @@ module FFRobot
     module Objects
         module Player
             class Player
-                attr_accessor :player_id, :on_bye, :name, :position_code, :current_lineup_slot, :nfl_team_id, :nfl_team, :keeper, :injury_status, :season_projection, :season_actual, :week_projection, :week_actual
+                attr_accessor :player_id, :on_bye, :name, :position_abbrev, :position_code, :current_lineup_slot, :eligible_slots, :nfl_team_id, :nfl_team, :keeper, :injury_status, :season_projection, :season_actual, :week_projection, :week_actual
                 POSITION_MAP = { # TODO: move to constants file
                     "0" => 'QB',
                     "1" => 'TQB',
@@ -71,8 +71,10 @@ module FFRobot
                     @player_id = player['playerId']
                     @on_bye = NFL_TEAM_ABBREV[player['playerPoolEntry']['player']['proTeamId'].to_s] == 'Bye'
                     @name = player['playerPoolEntry']['player']['fullName']
-                    @position_code = POSITION_MAP[player['playerPoolEntry']['player']['defaultPositionId'].to_s]
+                    @position_abbrev = POSITION_MAP[player['playerPoolEntry']['player']['defaultPositionId'].to_s]
+                    @position_code = player['playerPoolEntry']['player']['defaultPositionId']
                     @current_lineup_slot = player['lineupSlotId']
+                    @eligible_slots = player['playerPoolEntry']['player']['eligibleSlots']
                     @nfl_team_id = player['playerPoolEntry']['player']['proTeamId']
                     @nfl_team = NFL_TEAM_ABBREV[player['playerPoolEntry']['player']['proTeamId'].to_s]
                     @keeper = player['playerPoolEntry']['keeperValue'] == 1

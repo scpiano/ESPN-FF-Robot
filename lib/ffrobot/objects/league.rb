@@ -38,7 +38,7 @@ module FFRobot
                     @league_name = league_info['settings']['name']
                     @league_week = league_info['status']['currentMatchupPeriod']
                     @nfl_week = league_info['status']['latestScoringPeriod']
-\
+
                     league_info['members'].each do |member|
                         @members[member['displayName']] = member['id']
                     end
