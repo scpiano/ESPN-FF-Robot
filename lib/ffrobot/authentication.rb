@@ -18,9 +18,11 @@ module FFRobot
                 puts "Authentication unsuccessful.\nError encountered:#{resp['error'].to_s}\nPlease retry authentication or continue without username/password for public league access only."
                 return
             else
-                @cookies = {espn_s2: resp['data']['s2'], swid: resp['data']['profile']['swid']}
-                puts 'Authentication successful.'
-                return @cookies
+                espn_s2 = resp['data']['s2']
+                swid = resp['data']['profile']['swid']
+                
+                puts "Authentication successful.\nespn_s2: #{espn_s2}\nswid: #{swid}"
+                return espn_s2, swid
             end
         end
 

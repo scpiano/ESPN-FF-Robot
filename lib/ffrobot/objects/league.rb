@@ -19,14 +19,10 @@ module FFRobot
 
                     @uri = full_uri("ffl/seasons/#{@season_id}/segments/0/leagues/#{@league_id}")
                     
-                    if client.espn_s2 && client.swid
-                        @cookies = {
-                            'espn_s2': client.espn_s2,
-                            'SWID': client.swid
-                        }
-                    elsif client.username && client.password
-                        @cookies = client.authenticate
-                    end
+                    @cookies = {
+                        'espn_s2': client.espn_s2,
+                        'SWID': client.swid
+                    }
 
                     get_league
                 end

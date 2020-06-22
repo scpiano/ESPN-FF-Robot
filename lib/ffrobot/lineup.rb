@@ -71,7 +71,7 @@ module FFRobot
 
             current_lineup.each do |starting_player|
                 bench.each do |bench_player|
-                    if bench_player.eligible_slots.include?(starting_player.current_lineup_slot)
+                    if bench_player.eligible_slots.include?(starting_player.current_lineup_slot) && !roster_changes.values.include?(bench_player)
                         if (!['ACTIVE', 'QUESTIONABLE'].include?(starting_player.injury_status) || starting_player.on_bye) && ['ACTIVE', 'QUESTIONABLE'].include?(bench_player.injury_status) && !bench_player.on_bye
                             roster_changes[starting_player] = bench_player if roster_changes[starting_player].nil? || (bench_player.week_projection > roster_changes[starting_player].week_projection)
                         elsif bench_player.week_projection > starting_player.week_projection && ['ACTIVE', 'QUESTIONABLE'].include?(bench_player.injury_status) && !bench_player.on_bye
@@ -80,7 +80,7 @@ module FFRobot
                     else
                         i = 0
                         unset_positions.each do |pos|
-                            if bench_player.eligible_slots.include?(pos)
+                            if bench_player.eligible_slots.include?(pos) && !roster_changes.values.include?(bench_player)
                                 if ['ACTIVE', 'QUESTIONABLE'].include?(bench_player.injury_status) && !bench_player.on_bye
                                     roster_changes[pos+i] = {pos => bench_player} if roster_changes[pos+i].nil? || (bench_player.week_projection > roster_changes[pos+i].values.first.week_projection)
                                     i += 1

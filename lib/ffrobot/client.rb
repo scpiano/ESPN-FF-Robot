@@ -12,7 +12,7 @@ module FFRobot
 
         OptionParser.new do |opts|
             opts.banner = "Usage: ruby espn-ff-robot.rb [options]"
-            opts.on("-l", "--leagueid LEAGUEID", String, "REQUIRED - fantasy league ID") do |lid|
+            opts.on("-l", "--leagueid LEAGUEID", String, "Fantasy league ID") do |lid|
                 options[:league_id] = lid
             end
             opts.on("-t", "--teamid TEAMID", Integer, "Your fantasy team's ID within the same league") do |tid|
@@ -33,7 +33,10 @@ module FFRobot
             opts.on("-e", "--espn_s2 ESPN_S2", String, "ESPN API S2 cookie") do |espn_s2|
                 options[:espn_s2] = espn_s2
             end
-            opts.on("-c", "--command COMMAND", String, "Command to run FFRobot with") do |cmd|
+            opts.on("--config CONFIG", String, "Optional config file (use in place of other options, aside from command)") do |cnf|
+                options[:config] = cnf
+            end
+            opts.on("-c", "--command COMMAND", String, "REQUIRED - Command to run FFRobot with") do |cmd|
                 options[:command] = cmd
             end
             opts.on("-h", "--help", "Prints out usage options") do 
@@ -42,30 +45,36 @@ module FFRobot
             end
         end.parse!
         
-        raise OptionParser::MissingArgument if options[:league_id].nil?
+        raise OptionParser::MissingArgument if options[:command].nil? || [ options[:league_id], options[:config] ].all? { |x| x.nil? }
 
-        @league_id = options[:league_id]
-        @team_id = options[:team_id] || nil
-        @username = options[:username] || nil
-        @password = options[:password] || nil
-        @year = options[:year] || Time.new.year
-        @swid = options[:swid] || nil
-        @espn_s2 = options[:espn_s2] || nil
+        conf = !options[:config].nil? ? JSON.parse(File.read(options[:config])) : {}
+
         @command = options[:command]
-
+        @league_id = options[:league_id] || conf['league_id']
+        @team_id = options[:team_id] || conf['team_id']
+        @username = options[:username] || conf['username']
+        @password = options[:password] || conf['password']
+        @year = options[:year] || conf['year'] || Time.new.year
+        @swid = options[:swid] || conf['swid']
+        @espn_s2 = options[:espn_s2] || conf['espn_s2']
       end
 
       def exec_command 
         if @command == 'set_lineup'
-            league = Objects::League::League.new(self) #contains any number of teams comprised of players
+            league = Objects::League::League.new(self)
             set_lineup(league.teams[league.current_user_owner_id], league, @swid, @espn_s2)
         else
-            puts "Invalid command.\nPlease try again with a valid command."
+            puts "Invalid command.\nPlease try again with one of the valid commands listed in the README."
         end
       end
     end
 
     client = Client.new
+
+    if (client.swid.nil? || client.espn_s2.nil?) && (client.username && client.password)
+        client.espn_s2, client.swid = client.authenticate
+    end
+    
     client.exec_command
 end
   
