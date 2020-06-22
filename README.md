@@ -5,4 +5,4 @@ A lot of this was only possible by looking at the great work others have done on
 
 Aside from a lot of the simpler calls that are done in those repositories, I utilized Fiddler and Charles in order to get the requests needed in order to actually set the lineups.
 
-The logic I use behind actually setting the lineups is pretty simple - I use the projections that ESPN uses as a base, then an amalgamation of both those projections and industry-wide fantasy projections in order to set the final lineups per week.
+The logic I use behind actually setting the lineups is pretty simple - I use the projections that ESPN uses as a base, then an amalgamation of both those projections and industry-wide fantasy projections in order to set the final lineups per week (the other projections outside of ESPN I use in my local branch, rather not share the logic on the web).
