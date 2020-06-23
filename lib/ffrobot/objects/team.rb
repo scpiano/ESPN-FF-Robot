@@ -16,7 +16,6 @@ module FFRobot
                     roster.each do |player|
                         @roster << Objects::Player::Player.new(player, week, season_id)
                     end
-                    # puts @roster
                 end
                 
             end

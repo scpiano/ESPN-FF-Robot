@@ -1,8 +1,6 @@
 module FFRobot
     module Objects
         module League
-            ESPN_FF_URI = 'https://fantasy.espn.com/apis/v3/games/'
-
             class League
                 attr_accessor :teams, :current_user, :current_user_owner_id, :league_id, :season_id
                 
@@ -11,11 +9,12 @@ module FFRobot
                     @current_user_owner_id = ''
                     @league_id = client.league_id
                     @league_name = ''
-                    @members = {} #displayname and owner id
-                    @teams = {} #owner id and team object # currently just current user team
+                    @members = {}
+                    @teams = {} # currently just current user team
                     @league_week = 0
                     @nfl_week = 0
                     @season_id = client.year
+                    @logger = client.logger
 
                     @uri = full_uri("ffl/seasons/#{@season_id}/segments/0/leagues/#{@league_id}")
                     
@@ -54,15 +53,8 @@ module FFRobot
 
                     team_info['teams'].each do |team| 
                         if team['id'] == teams[@members[@current_user]] # just for current user right now
-                            # puts 'current team'
-                            # puts team
                             current_roster = team['roster']['entries']
                             @teams[@members[@current_user]] = Objects::Team::Team.new(current_roster, @league_week, team['id'], @season_id)
-                            # @teams.each do |owner, team|
-                            #     team.roster.each do |player|
-                            #         puts player.name, player.season_projection, player.season_actual
-                            #     end
-                            # end
                             break
                         else 
                             next
@@ -70,8 +62,8 @@ module FFRobot
                     end
                 end
 
-                def full_uri(endpoint) #TODO: move to helper module later
-                    return ESPN_FF_URI + endpoint
+                def full_uri(endpoint) #TODO: move to http module later
+                    return FFRobot::Constants::ESPN_FF_URI + endpoint
                 end
             end
         end

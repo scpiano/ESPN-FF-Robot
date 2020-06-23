@@ -1,11 +1,17 @@
 module FFRobot
     class Client
-      include Authentication
-      include HTTParty
-      include JSON
-      include Lineup
+        include FileUtils
+        include HTTParty
+        include JSON
+        include Logger
+
+        include Authentication
+        include Constants
+        include Helpers
+        include Lineup
+        
   
-      attr_accessor :league_id, :team_id, :username, :password, :year, :swid, :espn_s2
+      attr_accessor :league_id, :team_id, :username, :password, :year, :swid, :espn_s2, :logger
   
       def initialize 
         options = {}
@@ -39,6 +45,9 @@ module FFRobot
             opts.on("-c", "--command COMMAND", String, "REQUIRED - Command to run FFRobot with") do |cmd|
                 options[:command] = cmd
             end
+            opts.on("--logfile LOGFILE", String, "Where to store logs") do |log|
+                options[:logfile] = log
+            end
             opts.on("-h", "--help", "Prints out usage options") do 
                 puts opts
                 exit
@@ -57,14 +66,21 @@ module FFRobot
         @year = options[:year] || conf['year'] || Time.new.year
         @swid = options[:swid] || conf['swid']
         @espn_s2 = options[:espn_s2] || conf['espn_s2']
+        logfile = options[:logfile] || conf['logfile'] || "../log/espn-ff-robot.log"
+
+        FileUtils.mkdir_p(File.dirname(logfile))
+        @logger = ::Logger.new(logfile, shift_age = 7, shift_size=1048576)
+        # @logger = ::Logger.new(STDOUT)
+
+        @logger.info("Powering up robot...")
       end
 
       def exec_command 
         if @command == 'set_lineup'
             league = Objects::League::League.new(self)
-            set_lineup(league.teams[league.current_user_owner_id], league, @swid, @espn_s2)
+            set_lineup(league.teams[league.current_user_owner_id], league, @swid, @espn_s2, @logger)
         else
-            puts "Invalid command.\nPlease try again with one of the valid commands listed in the README."
+            @logger.info("Invalid command.\nPlease try again with one of the valid commands listed in the README.")
         end
       end
     end
@@ -72,7 +88,7 @@ module FFRobot
     client = Client.new
 
     if (client.swid.nil? || client.espn_s2.nil?) && (client.username && client.password)
-        client.espn_s2, client.swid = client.authenticate
+        client.espn_s2, client.swid = client.authenticate(@logger)
     end
     
     client.exec_command
