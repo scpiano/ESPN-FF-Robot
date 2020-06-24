@@ -81,6 +81,7 @@ module FFRobot
             set_lineup(league.teams[league.current_user_owner_id], league, @swid, @espn_s2, @logger)
         else
             @logger.info("Invalid command.\nPlease try again with one of the valid commands listed in the README.")
+            raise OptionParser::InvalidOption 
         end
       end
     end
@@ -89,6 +90,9 @@ module FFRobot
 
     if (client.swid.nil? || client.espn_s2.nil?) && (client.username && client.password)
         client.espn_s2, client.swid = client.authenticate(@logger)
+    else 
+        client.logger.info("Missing/invalid username and/or password. Please try again.")
+        raise OptionParser::MissingArgument 
     end
     
     client.exec_command

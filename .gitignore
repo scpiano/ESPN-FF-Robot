@@ -58,3 +58,4 @@ build-iPhoneSimulator/
 # Custom exceptions
 examples/
 log/
+conf.json
